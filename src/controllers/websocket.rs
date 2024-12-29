@@ -6,7 +6,7 @@ use axum::{
 use std::net::SocketAddr;
 
 use crate::{
-    args::Args, middleware::real_ip::RealIp, models::state::StateType,
+    args::Args, middleware::ip::RealIp, models::state::StateType,
     services::websocket::handle_connection,
 };
 

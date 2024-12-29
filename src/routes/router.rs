@@ -4,7 +4,7 @@ use tower_http::trace::TraceLayer;
 use crate::{
     args::Args,
     controllers::{health::health_check, websocket::websocket_handler},
-    middleware::real_ip::real_ip,
+    middleware::ip::real_ip,
     models::state::StateType,
 };
 
