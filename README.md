@@ -1,7 +1,7 @@
 # Remo-Auth
 
-[![CI](https://github.com/adidharmatoru/remo-signaller/actions/workflows/ci.yml/badge.svg)](https://github.com/adidharmatoru/remo-signaller/actions/workflows/ci.yml)
-[![codecov](https://codecov.io/gh/adidharmatoru/remo-signaller/branch/master/graph/badge.svg)](https://codecov.io/gh/adidharmatoru/remo-signaller)
+[![CI](https://github.com/adidharmatoru/remo-auth/actions/workflows/ci.yml/badge.svg)](https://github.com/adidharmatoru/remo-auth/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/adidharmatoru/remo-auth/branch/master/graph/badge.svg)](https://codecov.io/gh/adidharmatoru/remo-auth)
 
 remo-auth is a Rust-based WebSocket service for authentication and signalling. It leverages the power of Axum to provide a robust and efficient solution for managing user authentication and real-time communication.
 
