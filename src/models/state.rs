@@ -228,17 +228,28 @@ impl State {
         let filtered_sessions: Vec<_> = sessions_vec
             .into_iter()
             .filter(|(_, session)| {
-                os.map_or(true, |os| session.os.to_lowercase() == os.to_lowercase())
-                    && version.map_or(true, |version| {
-                        session.version.to_lowercase() == version.to_lowercase()
-                    })
-                    && server.map_or(true, |server| {
-                        session.server.to_lowercase() == server.to_lowercase()
-                    })
-                    && name.map_or(true, |name| {
-                        session.name.to_lowercase().contains(&name.to_lowercase())
-                    })
-                    && control.map_or(true, |control| session.control == control)
+                (os.is_none()
+                    || os
+                        .map(|os_val| session.os.to_lowercase() == os_val.to_lowercase())
+                        .unwrap())
+                    && (version.is_none()
+                        || version
+                            .map(|ver| session.version.to_lowercase() == ver.to_lowercase())
+                            .unwrap())
+                    && (server.is_none()
+                        || server
+                            .map(|srv| session.server.to_lowercase() == srv.to_lowercase())
+                            .unwrap())
+                    && (name.is_none()
+                        || name
+                            .map(|name_val| {
+                                session
+                                    .name
+                                    .to_lowercase()
+                                    .contains(&name_val.to_lowercase())
+                            })
+                            .unwrap())
+                    && (control.is_none() || control.map(|ctrl| session.control == ctrl).unwrap())
             })
             .collect();
 
