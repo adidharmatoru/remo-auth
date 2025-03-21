@@ -10,7 +10,9 @@ pub struct IceServer {
     #[serde(default)]
     pub username: String,
     #[serde(default)]
-    pub password: String,
+    pub credential: String,
+    #[serde(default)]
+    pub credential_type: String,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -54,7 +56,9 @@ pub enum SignallerMessage {
         room: String,
     },
     KeepAlive {},
-    IceServers {},
+    IceServers {
+        id: String,
+    },
     IceServersResponse {
         ice_servers: Vec<IceServer>,
     },

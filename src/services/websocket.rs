@@ -102,8 +102,8 @@ pub async fn handle_message(
         | SignallerMessage::JoinDeclined { to, .. } => {
             forward_message(state, to)?;
         }
-        SignallerMessage::IceServers {} => {
-            let ice_servers = state.get_ice_servers().await;
+        SignallerMessage::IceServers { id } => {
+            let ice_servers = state.get_ice_servers(id).await;
             tx.unbounded_send(Message::Text(serde_json::to_string(
                 &SignallerMessage::IceServersResponse { ice_servers },
             )?))?;

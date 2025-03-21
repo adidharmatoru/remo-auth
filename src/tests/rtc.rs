@@ -36,5 +36,6 @@ fn test_ice_server_default() {
     let ice_server = IceServer::default();
     assert_eq!(ice_server.url, "");
     assert_eq!(ice_server.username, "");
-    assert_eq!(ice_server.password, "");
+    assert_eq!(ice_server.credential, "");
+    assert_eq!(ice_server.credential_type, "");
 }

@@ -6,6 +6,20 @@ services:
     restart: unless-stopped
     ports:
       - "8444:8444"
+    environment:
+      # Example ICE server configuration (uncomment and modify as needed)
+      # STUN_SERVERS: "stun:stun.l.google.com:19302,stun:stun1.l.google.com:19302,stun:stun2.l.google.com:19302"
+      
+      # Option 1: TURN servers with shared credentials
+      # TURN_SERVERS: "turn:turn.example.com:3478,turns:turn.example.com:5349"
+      # TURN_USERNAME: "username"
+      # TURN_CREDENTIAL: "password"
+      
+      # Option 2: TURN servers with individual credentials (preferred)
+      # TURN_SERVER_CONFIGS: "turn:turn1.example.com:3478|username1|password1,turn:turn2.example.com:3478|username2|password2"
+      
+      # Whitelist of peer IDs that can access ICE servers
+      # ICE_SERVER_WHITELIST: "your-device-id-1,your-device-id-2,your-device-id-3"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8444/health"]
       interval: 30s

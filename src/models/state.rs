@@ -140,8 +140,66 @@ impl State {
         }
     }
 
-    pub async fn get_ice_servers(&self) -> Vec<IceServer> {
-        vec![]
+    pub async fn get_ice_servers(&self, id: String) -> Vec<IceServer> {
+        // Check if the peer ID is in the whitelist
+        if let Ok(whitelist) = std::env::var("ICE_SERVER_WHITELIST") {
+            let whitelisted_ids: Vec<&str> = whitelist.split(',').map(|s| s.trim()).collect();
+            if !whitelisted_ids.is_empty() && !whitelisted_ids.contains(&id.as_str()) {
+                return vec![];
+            }
+        }
+
+        let mut servers = Vec::new();
+
+        // Get STUN servers from environment variables
+        if let Ok(stun_servers) = std::env::var("STUN_SERVERS") {
+            let stun_server_list: Vec<IceServer> = stun_servers
+                .split(',')
+                .map(|url| IceServer {
+                    url: url.trim().to_string(),
+                    ..Default::default()
+                })
+                .collect();
+
+            servers.extend(stun_server_list);
+        }
+
+        // Get TURN servers with individual credentials
+        if let Ok(turn_server_config) = std::env::var("TURN_SERVER_CONFIGS") {
+            // Format: url|username|credential,url2|username2|credential2
+            for config in turn_server_config.split(',') {
+                let parts: Vec<&str> = config.split('|').collect();
+                if parts.len() >= 3 {
+                    servers.push(IceServer {
+                        url: parts[0].trim().to_string(),
+                        username: parts[1].trim().to_string(),
+                        credential: parts[2].trim().to_string(),
+                        credential_type: "password".to_string(),
+                    });
+                }
+            }
+        }
+
+        // Legacy support for common credential TURN servers
+        if let (Ok(turn_urls), Ok(turn_username), Ok(turn_credential)) = (
+            std::env::var("TURN_SERVERS"),
+            std::env::var("TURN_USERNAME"),
+            std::env::var("TURN_CREDENTIAL"),
+        ) {
+            let turn_server_list: Vec<IceServer> = turn_urls
+                .split(',')
+                .map(|url| IceServer {
+                    url: url.trim().to_string(),
+                    username: turn_username.clone(),
+                    credential: turn_credential.clone(),
+                    credential_type: "password".to_string(),
+                })
+                .collect();
+
+            servers.extend(turn_server_list);
+        }
+
+        servers
     }
 
     #[allow(clippy::too_many_arguments)]
@@ -170,10 +228,16 @@ impl State {
         let filtered_sessions: Vec<_> = sessions_vec
             .into_iter()
             .filter(|(_, session)| {
-                os.map_or(true, |os| session.os == os)
-                    && version.map_or(true, |version| session.version == version)
-                    && server.map_or(true, |server| session.server == server)
-                    && name.map_or(true, |name| session.name.contains(name))
+                os.map_or(true, |os| session.os.to_lowercase() == os.to_lowercase())
+                    && version.map_or(true, |version| {
+                        session.version.to_lowercase() == version.to_lowercase()
+                    })
+                    && server.map_or(true, |server| {
+                        session.server.to_lowercase() == server.to_lowercase()
+                    })
+                    && name.map_or(true, |name| {
+                        session.name.to_lowercase().contains(&name.to_lowercase())
+                    })
                     && control.map_or(true, |control| session.control == control)
             })
             .collect();
