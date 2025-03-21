@@ -6,7 +6,8 @@ use crate::models::state::RoomInfo;
 
 #[derive(Default, Clone, Debug, Serialize, Deserialize)]
 pub struct IceServer {
-    pub url: String,
+    #[serde(default)]
+    pub urls: Vec<String>,
     #[serde(default)]
     pub username: String,
     #[serde(default)]

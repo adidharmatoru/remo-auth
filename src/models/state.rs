@@ -156,7 +156,7 @@ impl State {
             let stun_server_list: Vec<IceServer> = stun_servers
                 .split(',')
                 .map(|url| IceServer {
-                    url: url.trim().to_string(),
+                    urls: vec![url.trim().to_string()],
                     ..Default::default()
                 })
                 .collect();
@@ -171,7 +171,7 @@ impl State {
                 let parts: Vec<&str> = config.split('|').collect();
                 if parts.len() >= 3 {
                     servers.push(IceServer {
-                        url: parts[0].trim().to_string(),
+                        urls: vec![parts[0].trim().to_string()],
                         username: parts[1].trim().to_string(),
                         credential: parts[2].trim().to_string(),
                         credential_type: "password".to_string(),
@@ -189,7 +189,7 @@ impl State {
             let turn_server_list: Vec<IceServer> = turn_urls
                 .split(',')
                 .map(|url| IceServer {
-                    url: url.trim().to_string(),
+                    urls: vec![url.trim().to_string()],
                     username: turn_username.clone(),
                     credential: turn_credential.clone(),
                     credential_type: "password".to_string(),

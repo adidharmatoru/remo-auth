@@ -219,8 +219,8 @@ async fn test_get_ice_servers() {
     );
     let ice_servers = locked_state.get_ice_servers("test_id".to_string()).await;
     assert_eq!(ice_servers.len(), 2);
-    assert_eq!(ice_servers[0].url, "stun:stun.example.com:3478");
-    assert_eq!(ice_servers[1].url, "stun:stun2.example.com:3478");
+    assert_eq!(ice_servers[0].urls[0], "stun:stun.example.com:3478");
+    assert_eq!(ice_servers[1].urls[0], "stun:stun2.example.com:3478");
 
     // Test with TURN servers using shared credentials
     env::set_var(
@@ -236,23 +236,23 @@ async fn test_get_ice_servers() {
     // Check STUN servers still exist
     assert!(ice_servers
         .iter()
-        .any(|s| s.url == "stun:stun.example.com:3478"));
+        .any(|s| s.urls.contains(&"stun:stun.example.com:3478".to_string())));
     assert!(ice_servers
         .iter()
-        .any(|s| s.url == "stun:stun2.example.com:3478"));
+        .any(|s| s.urls.contains(&"stun:stun2.example.com:3478".to_string())));
 
     // Check TURN servers
     let turn_servers: Vec<_> = ice_servers
         .iter()
-        .filter(|s| s.url.starts_with("turn:"))
+        .filter(|s| s.urls[0].starts_with("turn:"))
         .collect();
     assert_eq!(turn_servers.len(), 2);
     assert!(turn_servers
         .iter()
-        .any(|s| s.url == "turn:turn.example.com:3478"));
+        .any(|s| s.urls.contains(&"turn:turn.example.com:3478".to_string())));
     assert!(turn_servers
         .iter()
-        .any(|s| s.url == "turn:turn2.example.com:3478"));
+        .any(|s| s.urls.contains(&"turn:turn2.example.com:3478".to_string())));
     for turn_server in turn_servers {
         assert_eq!(turn_server.username, "username");
         assert_eq!(turn_server.credential, "password");
@@ -276,7 +276,7 @@ async fn test_get_ice_servers() {
     // Check first TURN server
     let turn1 = ice_servers
         .iter()
-        .find(|s| s.url == "turn:turn1.example.com:3478")
+        .find(|s| s.urls.contains(&"turn:turn1.example.com:3478".to_string()))
         .unwrap();
     assert_eq!(turn1.username, "user1");
     assert_eq!(turn1.credential, "pass1");
@@ -285,7 +285,7 @@ async fn test_get_ice_servers() {
     // Check second TURN server
     let turn2 = ice_servers
         .iter()
-        .find(|s| s.url == "turn:turn2.example.com:3478")
+        .find(|s| s.urls.contains(&"turn:turn2.example.com:3478".to_string()))
         .unwrap();
     assert_eq!(turn2.username, "user2");
     assert_eq!(turn2.credential, "pass2");

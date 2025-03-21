@@ -34,7 +34,7 @@ fn test_signaller_message_serialization() {
 #[test]
 fn test_ice_server_default() {
     let ice_server = IceServer::default();
-    assert_eq!(ice_server.url, "");
+    assert!(ice_server.urls.is_empty());
     assert_eq!(ice_server.username, "");
     assert_eq!(ice_server.credential, "");
     assert_eq!(ice_server.credential_type, "");
