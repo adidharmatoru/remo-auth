@@ -32,7 +32,7 @@ jobs:
           command: test
 
   coverage:
-    name: Code coverage
+    name: Code Coverage
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -54,7 +54,7 @@ jobs:
           slug: adidharmatoru/remo-auth
 
   fmt:
-    name: Rustfmt
+    name: Format
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
