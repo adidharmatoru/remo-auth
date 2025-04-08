@@ -16,7 +16,9 @@ pub async fn real_ip(
 ) -> Response {
     // Try to get real IP from X-Forwarded-For header
     let real_ip = headers
-        .get("x-forwarded-for")
+        .get("cf-connecting-ip")
+        .or_else(|| headers.get("x-real-ip"))
+        .or_else(|| headers.get("x-forwarded-for"))
         .and_then(|hv| hv.to_str().ok())
         .and_then(|s| s.split(',').next())
         .and_then(|s| s.trim().parse::<IpAddr>().ok())
